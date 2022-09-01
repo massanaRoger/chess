@@ -101,5 +101,23 @@ class Knight < Piece
   end
 end
 
-knight = Knight.new(3, 4)
-p knight.moves
+# Child class Knight that extends from Piece
+class Rook < Piece
+  attr_accessor :moves
+  def initialize(row, col)
+    super(row, col)
+    @moves = legal_moves
+  end
+
+  def legal_moves
+    {
+      top: [7, y],
+      right: [x, 7],
+      bottom: [0, y],
+      left: [x, 0]
+    }
+  end
+end
+
+rook = Rook.new(3, 4)
+p rook.moves
