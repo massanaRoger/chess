@@ -91,19 +91,31 @@ end
 # Child class Knight that extends from Piece
 class Knight < Piece
   attr_accessor :moves
+
   def initialize(row, col)
     super(row, col)
     @moves = legal_moves
   end
 
   def legal_moves
-    [[x+2, y+1], [x+1, y+2], [x-1, y+2], [x-2, y+1], [x-2, y-1], [x-1, y-2], [x+1, y-2], [x+2, y-1]]
+    [left_part, right_part].flatten(1)
+  end
+
+  private
+
+  def right_part
+    [[x + 2, y + 1], [x + 1, y + 2], [x - 1, y + 2], [x - 2, y + 1]]
+  end
+
+  def left_part
+    [[x - 2, y - 1], [x - 1, y - 2], [x + 1, y - 2], [x + 2, y - 1]]
   end
 end
 
-# Child class Knight that extends from Piece
+# Child class Rook that extends from Piece
 class Rook < Piece
   attr_accessor :moves
+
   def initialize(row, col)
     super(row, col)
     @moves = legal_moves
@@ -119,5 +131,52 @@ class Rook < Piece
   end
 end
 
-rook = Rook.new(3, 4)
-p rook.moves
+# Child class Queen that extends from Piece
+class Queen < Piece
+  attr_accessor :moves
+
+  def initialize(row, col)
+    super(row, col)
+    @rook = Rook.new(row, col)
+    @bishop = Bishop.new(row, col)
+    @moves = legal_moves
+  end
+
+  def legal_moves
+    # Queen moves like a combination between a bishop and a rook
+    @rook.legal_moves.merge(@bishop.legal_moves)
+  end
+end
+
+# Child class King that extends from Piece
+class King < Piece
+  attr_accessor :moves
+
+  def initialize(row, col)
+    super(row, col)
+    @moves = legal_moves
+  end
+
+  def legal_moves
+    {
+      top: [x + 1, y],
+      right: [x, y + 1],
+      bottom: [x - 1, y],
+      left: [x, y - 1]
+    }.merge(diagonal)
+  end
+
+  private
+
+  def diagonal
+    {
+      top_right: [x + 1, y + 1],
+      bottom_right: [x - 1, y + 1],
+      bottom_left: [x - 1, y - 1],
+      top_left: [x + 1, y - 1]
+    }
+  end
+end
+
+king = King.new(3, 4)
+p king.moves
