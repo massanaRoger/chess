@@ -4,16 +4,17 @@
 class Piece
   attr_reader :x, :y
 
-  def initialize(row, col)
+  def initialize(row, col, turn)
     @x = row
     @y = col
+    @turn = turn
   end
 end
 
 # Child class Pawn that extends from Piece
 class Pawn < Piece
-  def initialize(row, col)
-    super(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @moves = legal_moves
   end
 
@@ -31,8 +32,8 @@ end
 class Bishop < Piece
   attr_reader :moves
 
-  def initialize(row, col)
-    super(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @moves = legal_moves
   end
 
@@ -92,8 +93,8 @@ end
 class Knight < Piece
   attr_accessor :moves
 
-  def initialize(row, col)
-    super(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @moves = legal_moves
   end
 
@@ -116,8 +117,8 @@ end
 class Rook < Piece
   attr_accessor :moves
 
-  def initialize(row, col)
-    super(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @moves = legal_moves
   end
 
@@ -135,10 +136,10 @@ end
 class Queen < Piece
   attr_accessor :moves
 
-  def initialize(row, col)
-    super(row, col)
-    @rook = Rook.new(row, col)
-    @bishop = Bishop.new(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
+    @rook = Rook.new(row, col, turn)
+    @bishop = Bishop.new(row, col, turn)
     @moves = legal_moves
   end
 
@@ -152,8 +153,8 @@ end
 class King < Piece
   attr_accessor :moves
 
-  def initialize(row, col)
-    super(row, col)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @moves = legal_moves
   end
 
@@ -177,6 +178,3 @@ class King < Piece
     }
   end
 end
-
-king = King.new(3, 4)
-p king.moves
