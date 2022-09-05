@@ -40,29 +40,29 @@ describe Bishop do
     context 'when is at top' do
       subject(:top_left_bishop) { Bishop.new(7, 0, 'white') }
       it 'top left' do
-        expect(top_left_bishop.moves).to eq({down_right: [0, 7]})
+        expect(top_left_bishop.moves).to eq({ down_right: [0, 7] })
       end
 
       subject(:top_right_bishop) { Bishop.new(7, 7, 'white') }
       it 'top right' do
-        expect(top_right_bishop.moves).to eq({})
+        expect(top_right_bishop.moves).to eq({ down_left: [0, 0] })
       end
     end
 
     context 'when is at bottom' do
-      subject(:bottom_left_bishop) { Pawn.new(0, 0, 'white') }
-      xit 'bottom left' do
-        expect(bottom_left_pawn.moves).to eq({ up: [1, 0], up_right: [1, 1] })
+      subject(:bottom_left_bishop) { Bishop.new(0, 0, 'white') }
+      it 'bottom left' do
+        expect(bottom_left_bishop.moves).to eq({ up_right: [7, 7] })
       end
 
-      subject(:bottom_right_bishop) { Pawn.new(0, 7, 'white') }
-      xit 'bottom right' do
-        expect(bottom_right_pawn.moves).to eq({ up: [1, 7], up_left: [1, 6] })
+      subject(:bottom_right_bishop) { Bishop.new(0, 7, 'white') }
+      it 'bottom right' do
+        expect(bottom_right_bishop.moves).to eq({ up_left: [7, 0] })
       end
 
-      subject(:bottom_mid_bishop) { Pawn.new(0, 3, 'white') }
-      xit 'bottom mid' do
-        expect(bottom_mid_pawn.moves).to eq({ up: [1, 3], up_right: [1, 4], up_left: [1, 2] })
+      subject(:bottom_mid_bishop) { Bishop.new(0, 3, 'white') }
+      it 'bottom mid' do
+        expect(bottom_mid_bishop.moves).to eq({ up_right: [4, 7], up_left: [3, 0] })
       end
     end
   end

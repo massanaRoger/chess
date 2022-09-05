@@ -14,6 +14,7 @@ end
 # Child class Pawn that extends from Piece
 class Pawn < Piece
   attr_reader :moves
+
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter do |_key, value|
@@ -36,8 +37,7 @@ class Bishop < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    p legal_moves
-    @moves = legal_moves.filter {|_key, value| value != [x, y]}
+    @moves = legal_moves.filter { |_key, value| value != [x, y] }
   end
 
   def legal_moves
@@ -54,7 +54,7 @@ class Bishop < Piece
   def up_left
     i = x
     j = y
-    while i < 8 && j.positive?
+    while i < 7 && j.positive?
       i += 1
       j -= 1
     end
