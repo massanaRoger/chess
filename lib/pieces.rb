@@ -98,7 +98,7 @@ class Knight < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves
+    @moves = legal_moves.filter { |arr| arr[0] < 8 && arr[0] >= 0 && arr[1] < 8 && arr[1] >= 0 }
   end
 
   def legal_moves

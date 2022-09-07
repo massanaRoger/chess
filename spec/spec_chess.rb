@@ -67,3 +67,36 @@ describe Bishop do
     end
   end
 end
+
+describe Knight do
+  describe '#initialize' do
+    context 'when is at top' do
+      subject(:top_left_knight) { Knight.new(7, 0, 'white') }
+      it 'top left' do
+        expect(top_left_knight.moves).to eq([[6, 2], [5, 1]])
+      end
+
+      subject(:top_right_knight) { Knight.new(7, 7, 'white') }
+      it 'top right' do
+        expect(top_right_knight.moves).to eq([[5, 6], [6, 5]])
+      end
+    end
+
+    context 'when is at bottom' do
+      subject(:bottom_left_knight) { Knight.new(0, 0, 'white') }
+      it 'bottom left' do
+        expect(bottom_left_knight.moves).to eq([[2, 1], [1, 2]])
+      end
+
+      subject(:bottom_right_knight) { Knight.new(0, 7, 'white') }
+      it 'bottom right' do
+        expect(bottom_right_knight.moves).to eq([[1, 5], [2, 6]])
+      end
+
+      subject(:bottom_mid_knight) { Knight.new(0, 3, 'white') }
+      it 'bottom mid' do
+        expect(bottom_mid_knight.moves).to eq([[1, 1], [2, 2], [2, 4], [1, 5]])
+      end
+    end
+  end
+end
