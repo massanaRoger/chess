@@ -143,7 +143,7 @@ class Queen < Piece
     super(row, col, turn)
     @rook = Rook.new(row, col, turn)
     @bishop = Bishop.new(row, col, turn)
-    @moves = legal_moves
+    @moves = legal_moves.filter { |_key, value| value != [x, y] }
   end
 
   private
@@ -160,7 +160,7 @@ class King < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves
+    @moves = legal_moves.filter { |_key, value| value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0 }
   end
 
   def legal_moves
