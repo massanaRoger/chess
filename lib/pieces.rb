@@ -146,6 +146,8 @@ class Queen < Piece
     @moves = legal_moves
   end
 
+  private
+
   def legal_moves
     # Queen moves like a combination between a bishop and a rook
     @rook.legal_moves.merge(@bishop.legal_moves)

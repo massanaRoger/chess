@@ -133,3 +133,36 @@ describe Rook do
     end
   end
 end
+
+describe Queen do
+  describe '#initialize' do
+    context 'when is at top' do
+      subject(:top_left_queen) { Queen.new(7, 0, 'white') }
+      it 'top left' do
+        expect(top_left_queen.moves).to eq({ right: [7, 7], bottom: [0, 0], bottom_right: [0, 7] })
+      end
+
+      subject(:top_right_queen) { Queen.new(7, 7, 'white') }
+      it 'top right' do
+        expect(top_right_queen.moves).to eq({ bottom: [0, 7], left: [7, 0], bottom_left: [0, 0] })
+      end
+    end
+
+    context 'when is at bottom' do
+      subject(:bottom_left_rook) { Rook.new(0, 0, 'white') }
+      it 'bottom left' do
+        expect(bottom_left_rook.moves).to eq({ right: [0, 7], top: [7, 0] })
+      end
+
+      subject(:bottom_right_rook) { Rook.new(0, 7, 'white') }
+      it 'bottom right' do
+        expect(bottom_right_rook.moves).to eq({ left: [0, 0], top: [7, 7] })
+      end
+
+      subject(:bottom_mid_rook) { Rook.new(0, 3, 'white') }
+      it 'bottom mid' do
+        expect(bottom_mid_rook.moves).to eq({ left: [0, 0], top: [7, 3], right: [0, 7] })
+      end
+    end
+  end
+end
