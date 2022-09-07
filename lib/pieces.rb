@@ -13,13 +13,14 @@ end
 
 # Child class Pawn that extends from Piece
 class Pawn < Piece
-  attr_reader :moves
+  attr_reader :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter do |_key, value|
       value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0
     end
+    @symb = turn == 'white' ? '♙' : '♟'
   end
 
   def legal_moves
@@ -33,11 +34,12 @@ end
 
 # Child class Bishop that extends from Piece
 class Bishop < Piece
-  attr_reader :moves
+  attr_reader :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @symb = turn == 'white' ? '♗' : '♝'
   end
 
   def legal_moves
@@ -94,11 +96,12 @@ end
 
 # Child class Knight that extends from Piece
 class Knight < Piece
-  attr_accessor :moves
+  attr_accessor :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter { |arr| arr[0] < 8 && arr[0] >= 0 && arr[1] < 8 && arr[1] >= 0 }
+    @symb = turn == 'white' ? '♘' : '♞'
   end
 
   def legal_moves
@@ -118,11 +121,12 @@ end
 
 # Child class Rook that extends from Piece
 class Rook < Piece
-  attr_accessor :moves
+  attr_accessor :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @symb = turn == 'white' ? '♖' : '♜'
   end
 
   def legal_moves
@@ -137,13 +141,14 @@ end
 
 # Child class Queen that extends from Piece
 class Queen < Piece
-  attr_accessor :moves
+  attr_accessor :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @rook = Rook.new(row, col, turn)
     @bishop = Bishop.new(row, col, turn)
     @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @symb = turn == 'white' ? '♕' : '♛'
   end
 
   private
@@ -156,11 +161,12 @@ end
 
 # Child class King that extends from Piece
 class King < Piece
-  attr_accessor :moves
+  attr_accessor :moves, :symb
 
   def initialize(row, col, turn)
     super(row, col, turn)
     @moves = legal_moves.filter { |_key, value| value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0 }
+    @symb = turn == 'white' ? '♔' : '♚'
   end
 
   def legal_moves

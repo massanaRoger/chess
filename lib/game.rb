@@ -10,21 +10,22 @@ class Game
     init_game
     @turn = @player1 
     @board = create_board
+    print_board
   end
 
   def create_board
     arr = Array.new(8) { Array.new(8, nil) }
-    arr[0] = piece_row(0)
-    arr[1] = pawn_row(1)
-    @turn = @player2 
     arr[6] = pawn_row(6)
     arr[7] = piece_row(7)
+    @turn = @player2 
+    arr[0] = piece_row(0)
+    arr[1] = pawn_row(1)
     arr
   end
 
   def pawn_row(row)
     arr = Array.new(8, nil)
-    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn) }
+    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn.color) }
   end
 
   def piece_row(row)
@@ -38,6 +39,19 @@ class Game
     print 'Type player 2 name: '
     @player2 = Player.new(gets.chomp, 'black')
   end
+
+  def print_board
+    board.each do |arr|
+      arr.each do |val|
+        if val == nil
+          print ''
+        else
+          print val.symb
+        end
+      end
+      puts ''
+    end
+  end
 end
 
 class Player
@@ -49,4 +63,3 @@ class Player
 end
 
 game = Game.new
-p game.board
