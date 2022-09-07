@@ -7,7 +7,8 @@ class Game
   attr_accessor :board
 
   def initialize
-    @turn = 'white'
+    init_game
+    @turn = @player1 
     @board = create_board
   end
 
@@ -15,7 +16,7 @@ class Game
     arr = Array.new(8) { Array.new(8, nil) }
     arr[0] = piece_row(0)
     arr[1] = pawn_row(1)
-    @turn = 'black'
+    @turn = @player2 
     arr[6] = pawn_row(6)
     arr[7] = piece_row(7)
     arr
@@ -27,8 +28,23 @@ class Game
   end
 
   def piece_row(row)
-    [Rook.new(row, 0, @turn), Knight.new(row, 1, @turn), Bishop.new(row, 2, @turn), Queen.new(row, 3, @turn),
-     King.new(row, 4, @turn), Bishop.new(row, 5, @turn), Knight.new(row, 6, @turn), Rook.new(row, 7, @turn)]
+    [Rook.new(row, 0, @turn.color), Knight.new(row, 1, @turn.color), Bishop.new(row, 2, @turn.color), Queen.new(row, 3, @turn.color),
+     King.new(row, 4, @turn.color), Bishop.new(row, 5, @turn.color), Knight.new(row, 6, @turn.color), Rook.new(row, 7, @turn.color)]
+  end
+
+  def init_game
+    print 'Type player 1 name: '
+    @player1 = Player.new(gets.chomp, 'white')
+    print 'Type player 2 name: '
+    @player2 = Player.new(gets.chomp, 'black')
+  end
+end
+
+class Player
+  attr_reader :color, :name
+  def initialize(name, color)
+    @color = color 
+    @name = name
   end
 end
 
