@@ -122,7 +122,7 @@ class Rook < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves
+    @moves = legal_moves.filter { |_key, value| value != [x, y] }
   end
 
   def legal_moves
