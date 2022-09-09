@@ -86,9 +86,12 @@ class Game
 
   def legal_pos?(pos, piece)
     pos = format_pos(pos)
-    p pos
-    p piece.legal_moves
-    piece.legal_moves.value?(pos) 
+    legal_moves = piece.legal_moves.filter do |value|
+      board[value[0]][value[1]].nil? ||
+        board[value[0]][value[1]].turn != piece.turn
+    end
+    p legal_moves
+    legal_moves.include?(pos)
   end
 
   def format_pos(pos)

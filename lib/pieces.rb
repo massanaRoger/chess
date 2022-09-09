@@ -2,12 +2,16 @@
 
 # Parent class Piece
 class Piece
-  attr_reader :x, :y
+  attr_reader :x, :y, :turn
 
   def initialize(row, col, turn)
     @x = row
     @y = col
     @turn = turn
+  end
+
+  def filter_inside_board(value)
+    value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0
   end
 end
 
@@ -22,17 +26,16 @@ class Pawn < Piece
   end
 
   def legal_moves
-    {
-      up: [x + 1, y],
-      up_left: [x + 1, y - 1],
-      up_right: [x + 1, y + 1]
-    }.filter { |_key, value| value[0] < 8 && value[0] >= 0 &&
-               value[1] < 8 && value[1] >= 0 }
+    [
+      [x + 1, y],
+      [x + 1, y - 1],
+      [x + 1, y + 1]
+    ].filter { |value| filter_inside_board(value) }
   end
 
-  def update_pos(x, y)
-    @x = x
-    @y = y
+  def update_pos(row, col)
+    @x = row
+    @y = col
   end
 end
 
@@ -47,12 +50,12 @@ class Bishop < Piece
   end
 
   def legal_moves
-    {
-      up_left: up_left,
-      up_right: up_right,
-      down_left: down_left,
-      down_right: down_right
-    }.filter { |_key, value| value != [x, y] }
+    [
+      up_left,
+      up_right,
+      down_left,
+      down_right
+    ].filter { |value| value != [x, y] }
   end
 
   private
@@ -111,7 +114,7 @@ class Knight < Piece
   def legal_moves
     [left_part, right_part]
       .flatten(1)
-      .filter { |arr| arr[0] < 8 && arr[0] >= 0 && arr[1] < 8 && arr[1] >= 0 }
+      .filter { |arr| filter_inside_board(arr) }
   end
 
   private
@@ -131,17 +134,17 @@ class Rook < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @moves = legal_moves
     @symb = turn == 'white' ? '♖' : '♜'
   end
 
   def legal_moves
-    {
-      top: [7, y],
-      right: [x, 7],
-      bottom: [0, y],
-      left: [x, 0]
-    }
+    [
+      [7, y],
+      [x, 7],
+      [0, y],
+      [x, 0]
+    ].filter { |value| value != [x, y] }
   end
 end
 
@@ -161,9 +164,7 @@ class Queen < Piece
 
   def legal_moves
     # Queen moves like a combination between a bishop and a rook
-    @rook.legal_moves
-      .merge(@bishop.legal_moves)
-      .filter { |_key, value| value != [x, y] }
+    [@rook.legal_moves, @bishop.legal_moves].flatten(1).filter { |value| value != [x, y] }
   end
 end
 
@@ -178,23 +179,26 @@ class King < Piece
   end
 
   def legal_moves
-    {
-      top: [x + 1, y],
-      right: [x, y + 1],
-      bottom: [x - 1, y],
-      left: [x, y - 1]
-    }.merge(diagonal)
-     .filter { |_key, value| value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0 }
+    [
+      [
+        [x + 1, y],
+        [x, y + 1],
+        [x - 1, y],
+        [x, y - 1]
+      ],
+      diagonal
+    ].flatten(1)
+      .filter { |value| filter_inside_board(value) }
   end
 
   private
 
   def diagonal
-    {
-      top_right: [x + 1, y + 1],
-      bottom_right: [x - 1, y + 1],
-      bottom_left: [x - 1, y - 1],
-      top_left: [x + 1, y - 1]
-    }
+    [
+      [x + 1, y + 1],
+      [x - 1, y + 1],
+      [x - 1, y - 1],
+      [x + 1, y - 1]
+    ]
   end
 end
