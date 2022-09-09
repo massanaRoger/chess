@@ -17,9 +17,7 @@ class Pawn < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves.filter do |_key, value|
-      value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0
-    end
+    @moves = legal_moves
     @symb = turn == 'white' ? '♙' : '♟'
   end
 
@@ -28,7 +26,8 @@ class Pawn < Piece
       up: [x + 1, y],
       up_left: [x + 1, y - 1],
       up_right: [x + 1, y + 1]
-    }
+    }.filter { |_key, value| value[0] < 8 && value[0] >= 0 &&
+               value[1] < 8 && value[1] >= 0 }
   end
 
   def update_pos(x, y)
@@ -43,7 +42,7 @@ class Bishop < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @moves = legal_moves
     @symb = turn == 'white' ? '♗' : '♝'
   end
 
@@ -53,7 +52,7 @@ class Bishop < Piece
       up_right: up_right,
       down_left: down_left,
       down_right: down_right
-    }
+    }.filter { |_key, value| value != [x, y] }
   end
 
   private
@@ -105,12 +104,14 @@ class Knight < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves.filter { |arr| arr[0] < 8 && arr[0] >= 0 && arr[1] < 8 && arr[1] >= 0 }
+    @moves = legal_moves
     @symb = turn == 'white' ? '♘' : '♞'
   end
 
   def legal_moves
-    [left_part, right_part].flatten(1)
+    [left_part, right_part]
+      .flatten(1)
+      .filter { |arr| arr[0] < 8 && arr[0] >= 0 && arr[1] < 8 && arr[1] >= 0 }
   end
 
   private
@@ -152,7 +153,7 @@ class Queen < Piece
     super(row, col, turn)
     @rook = Rook.new(row, col, turn)
     @bishop = Bishop.new(row, col, turn)
-    @moves = legal_moves.filter { |_key, value| value != [x, y] }
+    @moves = legal_moves
     @symb = turn == 'white' ? '♕' : '♛'
   end
 
@@ -160,7 +161,9 @@ class Queen < Piece
 
   def legal_moves
     # Queen moves like a combination between a bishop and a rook
-    @rook.legal_moves.merge(@bishop.legal_moves)
+    @rook.legal_moves
+      .merge(@bishop.legal_moves)
+      .filter { |_key, value| value != [x, y] }
   end
 end
 
@@ -170,7 +173,7 @@ class King < Piece
 
   def initialize(row, col, turn)
     super(row, col, turn)
-    @moves = legal_moves.filter { |_key, value| value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0 }
+    @moves = legal_moves
     @symb = turn == 'white' ? '♔' : '♚'
   end
 
@@ -181,6 +184,7 @@ class King < Piece
       bottom: [x - 1, y],
       left: [x, y - 1]
     }.merge(diagonal)
+     .filter { |_key, value| value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0 }
   end
 
   private

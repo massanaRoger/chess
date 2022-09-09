@@ -15,11 +15,11 @@ class Game
 
   def create_board
     arr = Array.new(8) { Array.new(8, nil) }
-    arr[6] = pawn_row(6)
-    arr[7] = piece_row(7)
-    @turn = @player2
     arr[0] = piece_row(0)
     arr[1] = pawn_row(1)
+    @turn = @player2
+    arr[6] = pawn_row(6)
+    arr[7] = piece_row(7)
     arr
   end
 
@@ -48,7 +48,7 @@ class Game
 
   def print_board
     i = 8
-    board.each do |arr|
+    board.reverse_each do |arr|
       print "#{i} "
       arr.each do |val|
         print_row(val)
@@ -79,23 +79,23 @@ class Game
 
   def pick_piece(pos)
     pos = format_pos(pos)
-    board[pos[1]][pos[0]]
+    board[pos[0]][pos[1]]
   end
 
   private
 
   def legal_pos?(pos, piece)
     pos = format_pos(pos)
-    piece.update_pos(pos[0], pos[1])
-    piece.legal_moves.include?(pos) 
+    p pos
     p piece.legal_moves
+    piece.legal_moves.value?(pos) 
   end
 
   def format_pos(pos)
     pos = pos.split('')
-    pos[1] = 8 - pos[1].to_i
+    pos[1] = pos[1].to_i - 1
     pos[0] = (pos[0].ord - 49).chr.to_i
-    pos
+    [pos[1], pos[0]]
   end
 
   def print_row(val)
