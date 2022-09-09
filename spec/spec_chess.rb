@@ -196,7 +196,7 @@ describe King do
       subject(:bottom_mid_king) { King.new(0, 3, 'white') }
       it 'bottom mid' do
         expect(bottom_mid_king.moves).to eq({ left: [0, 2], top: [1, 3], right: [0, 4], top_right: [1, 4],
-                                               top_left: [1, 2] })
+                                              top_left: [1, 2] })
       end
     end
   end

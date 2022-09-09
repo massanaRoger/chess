@@ -30,6 +30,11 @@ class Pawn < Piece
       up_right: [x + 1, y + 1]
     }
   end
+
+  def update_pos(x, y)
+    @x = x
+    @y = y
+  end
 end
 
 # Child class Bishop that extends from Piece
