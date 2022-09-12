@@ -11,7 +11,6 @@ class Game
     @turn = @player1
     @board = Array.new(8) { Array.new(8, nil) }
     create_board
-    print_board
   end
 
   def create_board
@@ -24,7 +23,7 @@ class Game
 
   def pawn_row(row)
     arr = Array.new(8, nil)
-    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn.color, board) }
+    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn.color) }
   end
 
   def piece_row(row)
@@ -32,17 +31,17 @@ class Game
   end
 
   def left_side(row)
-    [Rook.new(row, 0, @turn.color, board),
-     Knight.new(row, 1, @turn.color, board),
-     Bishop.new(row, 2, @turn.color, board),
-     Queen.new(row, 3, @turn.color, board)]
+    [Rook.new(row, 0, @turn.color),
+     Knight.new(row, 1, @turn.color),
+     Bishop.new(row, 2, @turn.color),
+     Queen.new(row, 3, @turn.color)]
   end
 
   def right_side(row)
-    [King.new(row, 4, @turn.color, board),
-     Bishop.new(row, 5, @turn.color, board),
-     Knight.new(row, 6, @turn.color, board),
-     Rook.new(row, 7, @turn.color, board)]
+    [King.new(row, 4, @turn.color),
+     Bishop.new(row, 5, @turn.color),
+     Knight.new(row, 6, @turn.color),
+     Rook.new(row, 7, @turn.color)]
   end
 
   def init_game
@@ -66,38 +65,48 @@ class Game
   end
 
   def move_piece
-    puts 'Select the piece to move'
-    piece = gets.chomp
-    puts 'Select the move'
-    move = gets.chomp
-    piece = pick_piece(piece)
-    if legal_pos?(move, piece)
-      puts 'legal'
+    move_formatted, piece_formatted = select_piece_move
+    selected_piece = pick_piece(piece_formatted)
+    if legal_pos?(move_formatted, selected_piece)
+      p move_formatted
+      selected_piece.update_pos(move_formatted[0], move_formatted[1])
+      board[move_formatted[0]][move_formatted[1]] = selected_piece
+      board[piece_formatted[0]][piece_formatted[1]] = nil
     else
       puts 'Non legal'
     end
   end
 
+  def select_piece_move
+    puts 'Select the piece to move'
+    piece = gets.chomp
+    puts 'Select the move'
+    move = gets.chomp
+    move_formatted = format_pos(move)
+    piece_formatted = format_pos(piece)
+    return move_formatted, piece_formatted
+  end
+
   def play_game
     game_end = false
-    move_piece until game_end
+    until game_end
+      print_board
+      move_piece 
+    end
   end
 
   def pick_piece(pos)
-    pos = format_pos(pos)
     board[pos[0]][pos[1]]
   end
 
   private
 
   def legal_pos?(pos, piece)
-    pos = format_pos(pos)
     p piece.legal_moves
     legal_moves = piece.legal_moves.filter do |value|
       board[value[0]][value[1]].nil? ||
         board[value[0]][value[1]].turn != piece.turn
     end
-    p legal_moves
     legal_moves.include?(pos)
   end
 
@@ -111,7 +120,7 @@ class Game
   def print_row(val)
     print ' '
     if val.nil?
-      print ''
+      print ' '
     else
       print val.symb
     end

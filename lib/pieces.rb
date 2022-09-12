@@ -4,15 +4,19 @@
 class Piece
   attr_reader :x, :y, :turn
 
-  def initialize(row, col, turn, board)
+  def initialize(row, col, turn)
     @x = row
     @y = col
     @turn = turn
-    @board = board
   end
 
   def filter_inside_board(value)
     value[0] < 8 && value[0] >= 0 && value[1] < 8 && value[1] >= 0
+  end
+
+  def update_pos(row, col)
+    @x = row
+    @y = col
   end
 end
 
@@ -20,8 +24,8 @@ end
 class Pawn < Piece
   attr_reader :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @symb = turn == 'white' ? '♙' : '♟'
   end
 
@@ -34,18 +38,14 @@ class Pawn < Piece
     ].filter { |value| filter_inside_board(value) }
   end
 
-  def update_pos(row, col)
-    @x = row
-    @y = col
-  end
 end
 
 # Child class Bishop that extends from Piece
 class Bishop < Piece
   attr_reader :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @symb = turn == 'white' ? '♗' : '♝'
   end
 
@@ -64,7 +64,7 @@ class Bishop < Piece
     i = x
     j = y
     arr = []
-    while i < 7 && j.positive? && @board[i][j].nil?
+    while i < 7 && j.positive?
       i += 1
       j -= 1
       arr.push([i, j])
@@ -76,7 +76,7 @@ class Bishop < Piece
     i = x
     j = y
     arr = []
-    while i < 7 && j < 7 && @board[i][j].nil?
+    while i < 7 && j < 7
       i += 1
       j += 1
       arr.push([i, j])
@@ -88,7 +88,7 @@ class Bishop < Piece
     i = x
     j = y
     arr = []
-    while i.positive? && j.positive? && @board[i][j].nil?
+    while i.positive? && j.positive?
       i -= 1
       j -= 1
       arr.push([i, j])
@@ -100,7 +100,7 @@ class Bishop < Piece
     i = x
     j = y
     arr = []
-    while i.positive? && j < 7 && @board[i][j].nil?
+    while i.positive? && j < 7
       i -= 1
       j += 1
       arr.push([i, j])
@@ -113,8 +113,8 @@ end
 class Knight < Piece
   attr_accessor :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @symb = turn == 'white' ? '♘' : '♞'
   end
 
@@ -139,8 +139,8 @@ end
 class Rook < Piece
   attr_accessor :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @symb = turn == 'white' ? '♖' : '♜'
   end
 
@@ -159,7 +159,7 @@ class Rook < Piece
     i = x
     j = y
     arr = []
-    while i < 7 && @board[i][j].nil?
+    while i < 7
       i += 1
       arr.push([i, j])
     end
@@ -170,7 +170,7 @@ class Rook < Piece
     i = x
     j = y
     arr = []
-    while j < 7 && @board[i][j].nil?
+    while j < 7
       j += 1
       arr.push([i, j])
     end
@@ -181,7 +181,7 @@ class Rook < Piece
     i = x
     j = y
     arr = []
-    while i.positive? && @board[i][j].nil?
+    while i.positive? 
       i -= 1
       arr.push([i, j])
     end
@@ -192,7 +192,7 @@ class Rook < Piece
     i = x
     j = y
     arr = []
-    while j.positive? && @board[i][j].nil?
+    while j.positive?
       j -= 1
       arr.push([i, j])
     end
@@ -204,11 +204,18 @@ end
 class Queen < Piece
   attr_accessor :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
-    @rook = Rook.new(row, col, turn, board)
-    @bishop = Bishop.new(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
+    @rook = Rook.new(row, col, turn)
+    @bishop = Bishop.new(row, col, turn)
     @symb = turn == 'white' ? '♕' : '♛'
+  end
+
+  def update_pos(row, col)
+    @x = row
+    @y = col
+    @rook.update_pos(row, col)
+    @bishop.update_pos(row, col)
   end
 
   def legal_moves
@@ -221,8 +228,8 @@ end
 class King < Piece
   attr_accessor :moves, :symb
 
-  def initialize(row, col, turn, board)
-    super(row, col, turn, board)
+  def initialize(row, col, turn)
+    super(row, col, turn)
     @symb = turn == 'white' ? '♔' : '♚'
   end
 
