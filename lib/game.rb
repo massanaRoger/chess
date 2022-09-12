@@ -9,34 +9,40 @@ class Game
   def initialize
     init_game
     @turn = @player1
-    @board = create_board
+    @board = Array.new(8) { Array.new(8, nil) }
+    create_board
     print_board
   end
 
   def create_board
-    arr = Array.new(8) { Array.new(8, nil) }
-    arr[0] = piece_row(0)
-    arr[1] = pawn_row(1)
+    @board[0] = piece_row(0)
+    @board[1] = pawn_row(1)
     @turn = @player2
-    arr[6] = pawn_row(6)
-    arr[7] = piece_row(7)
-    arr
+    @board[6] = pawn_row(6)
+    @board[7] = piece_row(7)
   end
 
   def pawn_row(row)
     arr = Array.new(8, nil)
-    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn.color) }
+    arr.map.with_index { |_el, index| Pawn.new(row, index, @turn.color, board) }
   end
 
   def piece_row(row)
-    [Rook.new(row, 0, @turn.color),
-     Knight.new(row, 1, @turn.color),
-     Bishop.new(row, 2, @turn.color),
-     Queen.new(row, 3, @turn.color),
-     King.new(row, 4, @turn.color),
-     Bishop.new(row, 5, @turn.color),
-     Knight.new(row, 6, @turn.color),
-     Rook.new(row, 7, @turn.color)]
+    [left_side(row), right_side(row)].flatten(1)
+  end
+
+  def left_side(row)
+    [Rook.new(row, 0, @turn.color, board),
+     Knight.new(row, 1, @turn.color, board),
+     Bishop.new(row, 2, @turn.color, board),
+     Queen.new(row, 3, @turn.color, board)]
+  end
+
+  def right_side(row)
+    [King.new(row, 4, @turn.color, board),
+     Bishop.new(row, 5, @turn.color, board),
+     Knight.new(row, 6, @turn.color, board),
+     Rook.new(row, 7, @turn.color, board)]
   end
 
   def init_game
@@ -86,6 +92,7 @@ class Game
 
   def legal_pos?(pos, piece)
     pos = format_pos(pos)
+    p piece.legal_moves
     legal_moves = piece.legal_moves.filter do |value|
       board[value[0]][value[1]].nil? ||
         board[value[0]][value[1]].turn != piece.turn
