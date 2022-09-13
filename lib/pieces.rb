@@ -29,7 +29,11 @@ class Pawn < Piece
     @symb = turn == 'white' ? '♙' : '♟'
   end
 
-  def legal_moves
+  def legal_moves(color)
+    color == 'white' ? legal_moves_white : legal_moves_black
+  end
+
+  def legal_moves_white
     [
       [x + 2, y],
       [x + 1, y],
@@ -38,6 +42,14 @@ class Pawn < Piece
     ].filter { |value| filter_inside_board(value) }
   end
 
+  def legal_moves_black
+    [
+      [x - 2, y],
+      [x - 1, y],
+      [x - 1, y - 1],
+      [x - 1, y + 1]
+    ].filter { |value| filter_inside_board(value) }
+  end
 end
 
 # Child class Bishop that extends from Piece
@@ -49,7 +61,7 @@ class Bishop < Piece
     @symb = turn == 'white' ? '♗' : '♝'
   end
 
-  def legal_moves
+  def legal_moves(_color)
     [
       up_left,
       up_right,
@@ -118,7 +130,7 @@ class Knight < Piece
     @symb = turn == 'white' ? '♘' : '♞'
   end
 
-  def legal_moves
+  def legal_moves(_color)
     [left_part, right_part]
       .flatten(1)
       .filter { |arr| filter_inside_board(arr) }
@@ -144,7 +156,7 @@ class Rook < Piece
     @symb = turn == 'white' ? '♖' : '♜'
   end
 
-  def legal_moves
+  def legal_moves(_color)
     [
       up,
       right,
@@ -218,7 +230,7 @@ class Queen < Piece
     @bishop.update_pos(row, col)
   end
 
-  def legal_moves
+  def legal_moves(_color)
     # Queen moves like a combination between a bishop and a rook
     [@rook.legal_moves, @bishop.legal_moves].flatten(1).filter { |value| value != [x, y] }
   end
@@ -233,7 +245,7 @@ class King < Piece
     @symb = turn == 'white' ? '♔' : '♚'
   end
 
-  def legal_moves
+  def legal_moves(_color)
     [
       [
         [x + 1, y],

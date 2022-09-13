@@ -19,6 +19,7 @@ class Game
     @turn = @player2
     @board[6] = pawn_row(6)
     @board[7] = piece_row(7)
+    @turn = @player1
   end
 
   def pawn_row(row)
@@ -67,11 +68,12 @@ class Game
   def move_piece
     move_formatted, piece_formatted = select_piece_move
     selected_piece = pick_piece(piece_formatted)
-    if legal_pos?(move_formatted, selected_piece)
+    if selected_piece.turn == @turn.color && legal_pos?(move_formatted, selected_piece)
       p move_formatted
       selected_piece.update_pos(move_formatted[0], move_formatted[1])
       board[move_formatted[0]][move_formatted[1]] = selected_piece
       board[piece_formatted[0]][piece_formatted[1]] = nil
+      @turn = @turn == @player1 ? @player2 : @player1
     else
       puts 'Non legal'
     end
@@ -102,8 +104,7 @@ class Game
   private
 
   def legal_pos?(pos, piece)
-    p piece.legal_moves
-    legal_moves = piece.legal_moves.filter do |value|
+    legal_moves = piece.legal_moves(@turn.color).filter do |value|
       board[value[0]][value[1]].nil? ||
         board[value[0]][value[1]].turn != piece.turn
     end
