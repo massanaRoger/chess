@@ -1,10 +1,32 @@
 # frozen_string_literal: true
 
+require 'ruby-serial'
+require 'json'
 require_relative './pieces'
 
 # Main class for the game
 class Game
   attr_accessor :board
+
+  def as_json(options={})
+    {
+        player1: @player1,
+        player2: @player2,
+        turn: @turn,
+        board: @board
+    }
+  end
+
+  def to_json(*options)
+    as_json(*options).to_json(*options)
+  end
+
+  def from_json(o)
+    @player1 = o["player1"]
+    @player2 = o["player2"]
+    @turn = o["turn"]
+    @board = o["board"]
+  end
 
   def initialize
     init_game
@@ -86,14 +108,15 @@ class Game
     move = gets.chomp
     move_formatted = format_pos(move)
     piece_formatted = format_pos(piece)
-    return move_formatted, piece_formatted
+    [move_formatted, piece_formatted]
   end
 
   def play_game
     game_end = false
     until game_end
       print_board
-      move_piece 
+      move_piece
+      ask_save_game
     end
   end
 
@@ -101,7 +124,25 @@ class Game
     board[pos[0]][pos[1]]
   end
 
+
   private
+
+  def ask_save_game
+    puts 'Save the game? 1 yes, else no'
+    selection = gets.chomp
+    save_game if selection == '1'
+  end
+
+  def save_game
+    #json_string = self.to_json
+    #json_string = JSON.generate(self)
+    serialized_obj = RubySerial::dump(self)
+    File.write('save_game.txt', serialized_obj)
+    #File.open('save_game.json', 'w') do |file|
+    #  JSON.dump(obj, file)
+    #end
+  end
+
 
   def legal_pos?(pos, piece)
     legal_moves = piece.legal_moves(@turn.color).filter do |value|
@@ -138,5 +179,25 @@ class Player
   end
 end
 
-game = Game.new
+def read_file(file_name)
+  file = File.open(file_name)
+  file_content = file.read
+  file.close
+  file_content
+end
+
+def ask_load_game
+  puts 'Load the game? 1 yes, else no'
+  selection = gets.chomp
+  return load_game(read_file('save_game.txt')) if selection == '1'
+  Game.new
+end
+
+def load_game(json_string)
+  #serialized_obj = JSON.parse(json_string)
+  RubySerial::load(json_string)
+end
+
+game = ask_load_game 
+p game
 game.play_game

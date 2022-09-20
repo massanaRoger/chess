@@ -193,7 +193,7 @@ class Rook < Piece
     i = x
     j = y
     arr = []
-    while i.positive? 
+    while i.positive?
       i -= 1
       arr.push([i, j])
     end
