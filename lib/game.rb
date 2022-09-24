@@ -8,24 +8,17 @@ require_relative './pieces'
 class Game
   attr_accessor :board
 
-  def as_json(options={})
+  def as_json(_options = {})
     {
-        player1: @player1,
-        player2: @player2,
-        turn: @turn,
-        board: @board
+      player1: @player1,
+      player2: @player2,
+      turn: @turn,
+      board: @board
     }
   end
 
   def to_json(*options)
     as_json(*options).to_json(*options)
-  end
-
-  def from_json(o)
-    @player1 = o["player1"]
-    @player2 = o["player2"]
-    @turn = o["turn"]
-    @board = o["board"]
   end
 
   def initialize
@@ -116,6 +109,7 @@ class Game
     until game_end
       print_board
       move_piece
+      game_end = print_check
       ask_save_game
     end
   end
@@ -123,7 +117,6 @@ class Game
   def pick_piece(pos)
     board[pos[0]][pos[1]]
   end
-
 
   private
 
@@ -134,15 +127,14 @@ class Game
   end
 
   def save_game
-    #json_string = self.to_json
-    #json_string = JSON.generate(self)
-    serialized_obj = RubySerial::dump(self)
+    # json_string = self.to_json
+    # json_string = JSON.generate(self)
+    serialized_obj = RubySerial.dump(self)
     File.write('save_game.txt', serialized_obj)
-    #File.open('save_game.json', 'w') do |file|
+    # File.open('save_game.json', 'w') do |file|
     #  JSON.dump(obj, file)
-    #end
+    # end
   end
-
 
   def legal_pos?(pos, piece)
     legal_moves = piece.legal_moves(@turn.color).filter do |value|
@@ -167,6 +159,31 @@ class Game
       print val.symb
     end
   end
+
+  def print_check
+    king = @board.flatten(1).compact.filter { |piece| piece.class.name == 'King' && piece.turn == @turn.color}[0]
+    check = check?(king.x, king.y)
+    if check
+      if check_mate?(king)
+        puts 'Check mate'
+        return true
+      else
+        puts 'Check'
+      end
+    end
+    false
+  end
+
+  def check?(row, col)
+    filter_board = @board.flatten(1)
+      .compact
+      .filter { |piece| legal_pos?([row, col], piece) }
+    !filter_board.empty?
+  end
+
+  def check_mate?(piece)
+    piece.legal_moves.filter { |cell| legal_pos?(cell, piece) }.empty?
+  end
 end
 
 # Class for each player
@@ -190,14 +207,14 @@ def ask_load_game
   puts 'Load the game? 1 yes, else no'
   selection = gets.chomp
   return load_game(read_file('save_game.txt')) if selection == '1'
+
   Game.new
 end
 
 def load_game(json_string)
-  #serialized_obj = JSON.parse(json_string)
-  RubySerial::load(json_string)
+  # serialized_obj = JSON.parse(json_string)
+  RubySerial.load(json_string)
 end
 
-game = ask_load_game 
-p game
+game = ask_load_game
 game.play_game
